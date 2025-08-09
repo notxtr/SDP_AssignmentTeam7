@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class Customer : Observer
+internal class Customer : Observer
 {
     private string name;
     private List<Restaurant> offers;

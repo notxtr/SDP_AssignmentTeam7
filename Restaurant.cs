@@ -1,6 +1,6 @@
 ﻿using System;
 
-public abstract class Restaurant
+internal abstract class Restaurant : Subject
 {
     private string name;
     private List<Customer> customers;
@@ -32,6 +32,19 @@ public abstract class Restaurant
         {
             customer.update(this.Name, this.Offer);
         }
+    }
+
+    public void addNewOffer()
+    {
+        Console.WriteLine($"Adding new offer for {this.Name}:");
+        string newOffer = Console.ReadLine();
+        this.Offer = newOffer;
+        NotifyCustomers();
+    }
+
+    public void displayMenu()
+    {
+        Console.WriteLine($"Menu for {this.Name}:");
     }
 
 
