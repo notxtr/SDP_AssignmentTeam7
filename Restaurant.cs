@@ -4,12 +4,12 @@ internal abstract class Restaurant : Subject
 {
     private string name;
     private List<Customer> customers;
-    private string offer;
+    private Offer offer;
 
     public string Name { get { return name; } set { name = value; } }
     public string Offer { get { return offer; } set { offer = value; } }
 
-    public Restaurant(string name, string offer)
+    public Restaurant(string name, Offer offer)
     {
         this.name = name;
         this.offer = offer;
@@ -34,18 +34,7 @@ internal abstract class Restaurant : Subject
         }
     }
 
-    public void addNewOffer()
-    {
-        Console.WriteLine($"Adding new offer for {this.Name}:");
-        string newOffer = Console.ReadLine();
-        this.Offer = newOffer;
-        NotifyCustomers();
-    }
 
-    public void displayMenu()
-    {
-        Console.WriteLine($"Menu for {this.Name}:");
-    }
 
 
 }
