@@ -1,20 +1,22 @@
-﻿using System;
+﻿using SDP_Assignment_Team7;
+using System;
 
-public abstract class Restaurant
+internal class Restaurant
 {
     private string name;
     private List<Customer> customers;
-    private string offer;
+    private Offer offer;
 
     public string Name { get { return name; } set { name = value; } }
-    public string Offer { get { return offer; } set { offer = value; } }
+    public Offer Offer { get { return offer; } set { offer = value; } }
 
-    public Restaurant(string name, string offer)
+    public Restaurant(string name)
     {
         this.name = name;
-        this.offer = offer;
         this.customers = new List<Customer>();
     }
+
+
 
     public void addCustomer(Customer customer)
     {
@@ -26,12 +28,23 @@ public abstract class Restaurant
         customers.Remove(customer);
     }
 
-    public void NotifyCustomers()
+    public void NotifyCustomers(Offer offer)
     {
         foreach (Customer customer in customers)
         {
-            customer.update(this.Name, this.Offer);
+            customer.update(this.Name, offer.getDescription());
         }
+    }
+
+    public void setOffer(Offer offer)
+    {
+        this.offer = offer;
+        NotifyCustomers(offer);
+    }
+
+    public void removeOffer()
+    {
+        offer = new NoOffer();
     }
 
 

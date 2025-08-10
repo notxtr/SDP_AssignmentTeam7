@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SDP_Assignment_Team7;
+using System;
 
-public interface Subject
+internal interface Subject
 {
     void addCustomer(Customer customer);
     void removeCustomer(Customer customer);
-    void NotifyCustomers();
+    void NotifyCustomers(Offer offer);
 }
