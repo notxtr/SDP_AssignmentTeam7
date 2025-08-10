@@ -10,8 +10,8 @@ namespace SDP_Assignment_Team7
     {
         string dishType { get; }
         double price { get; }
-        string GetDescription();
-        double GetPrice();
+        string getDescription();
+        double getPrice();
         void print();
     }
 

@@ -6,25 +6,31 @@ using System.Threading.Tasks;
 
 namespace SDP_Assignment_Team7
 {
-    internal class Dish: FoodItem
+    internal class Dish : MenuItem
     {
-        private string Name;
-        private double Price;
+        public string dishType { get; private set; }
+        public double price { get; private set; }
 
-        public Dish(string name, double price)
+        public Dish(string dT, double p)
         {
-            Name = name;
-            Price = price;
+            dishType = dT;
+            price = p;
         }
 
         public string getDescription()
         {
-            return Name;
+            return dishType;
         }
 
         public double getPrice()
         {
-            return Price;
+            return price;
+        }
+
+        public void print()
+        {
+            Console.WriteLine($"{getDescription()} - ${getPrice():0.00}");
         }
     }
+
 }
