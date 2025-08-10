@@ -22,34 +22,34 @@ Menu beverages = new Menu("Beverage");
 Menu soups = new Menu("Soup");
 
 // --- Main Courses ---
-mainCourses.add(new MenuItem("Kaya Toast Set", "Kaya butter toast with soft-boiled eggs", "Beverage", 3.80));
-mainCourses.add(new MenuItem("Nasi Lemak (Mini)", "Coconut rice, ikan bilis, sambal, half egg", "Main Course", 4.20));
-mainCourses.add(new MenuItem("Egg & Cheese Omelette", "Three-egg omelette with cheddar", "Main Course", 4.50));
-mainCourses.add(new MenuItem("Pancakes", "Fluffy pancakes with maple syrup", "Main Course", 5.20));
-mainCourses.add(new MenuItem("Pancakes (Mini)", "Small stack with syrup", "Main Course", 3.40));
+mainCourses.add(new Dish("Kaya Toast Set", "Kaya butter toast with soft-boiled eggs", "Beverage", 3.80));
+mainCourses.add(new Dish("Nasi Lemak (Mini)", "Coconut rice, ikan bilis, sambal, half egg", "Main Course", 4.20));
+mainCourses.add(new Dish("Egg & Cheese Omelette", "Three-egg omelette with cheddar", "Main Course", 4.50));
+mainCourses.add(new Dish("Pancakes", "Fluffy pancakes with maple syrup", "Main Course", 5.20));
+mainCourses.add(new Dish("Pancakes (Mini)", "Small stack with syrup", "Main Course", 3.40));
 
 // --- Side Dishes ---
-sideDishes.add(new MenuItem("Ikan Bilis & Peanuts", "Crunchy anchovies with peanuts", "Side Dish", 1.50));
-sideDishes.add(new MenuItem("Hash Browns", "Crispy shredded potato patties", "Beverage", 1.80));
-sideDishes.add(new MenuItem("Buttered Toast", "Two slices with butter", "Side Dish", 1.20));
+sideDishes.add(new Dish("Ikan Bilis & Peanuts", "Crunchy anchovies with peanuts", "Side Dish", 1.50));
+sideDishes.add(new Dish("Hash Browns", "Crispy shredded potato patties", "Beverage", 1.80));
+sideDishes.add(new Dish("Buttered Toast", "Two slices with butter", "Side Dish", 1.20));
 
 // --- Appetizers ---
-appetizers.add(new MenuItem("Otah Bites", "Spicy fish paste grilled in banana leaf", "Beverage", 2.20));
-appetizers.add(new MenuItem("Fruit Cup", "Seasonal mixed fruit", "Appetizer", 2.50));
-appetizers.add(new MenuItem("Yogurt Parfait", "Yogurt layered with granola & berries", "Appetizer", 2.80));
+appetizers.add(new Dish("Otah Bites", "Spicy fish paste grilled in banana leaf", "Beverage", 2.20));
+appetizers.add(new Dish("Fruit Cup", "Seasonal mixed fruit", "Appetizer", 2.50));
+appetizers.add(new Dish("Yogurt Parfait", "Yogurt layered with granola & berries", "Appetizer", 2.80));
 
 // --- Desserts ---
-desserts.add(new MenuItem("Banana Bread Slice", "Moist banana loaf slice", "Beverage", 2.00));
-desserts.add(new MenuItem("Blueberry Muffin", "Buttery muffin with blueberries", "Dessert", 2.20));
+desserts.add(new Dish("Banana Bread Slice", "Moist banana loaf slice", "Beverage", 2.00));
+desserts.add(new Dish("Blueberry Muffin", "Buttery muffin with blueberries", "Dessert", 2.20));
 
 // --- Beverages ---
-beverages.add(new MenuItem("Kopi O", "Black coffee, no sugar", "Beverage", 1.40));
-beverages.add(new MenuItem("Teh Tarik", "Pulled milk tea", "Beverage", 1.80));
-beverages.add(new MenuItem("Orange Juice", "Freshly squeezed OJ", "Beverage", 2.50));
+beverages.add(new Dish("Kopi O", "Black coffee, no sugar", "Beverage", 1.40));
+beverages.add(new Dish("Teh Tarik", "Pulled milk tea", "Beverage", 1.80));
+beverages.add(new Dish("Orange Juice", "Freshly squeezed OJ", "Beverage", 2.50));
 
 // --- Soups ---
-soups.add(new MenuItem("Tomato Soup (Cup)", "Fresh tomato and basil soup", "Soup", 3.20));
-soups.add(new MenuItem("Mushroom Soup", "Creamy button mushroom soup", "Beverage", 3.20));
+soups.add(new Dish("Tomato Soup (Cup)", "Fresh tomato and basil soup", "Soup", 3.20));
+soups.add(new Dish("Mushroom Soup", "Creamy button mushroom soup", "Beverage", 3.20));
 
 // Nest dish-type submenus under Breakfast Menu
 breakfastMenu.add(mainCourses);
