@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace SDP_Assignment_Team7
 {
-    internal interface FoodItem
+    internal interface MenuItem
     {
-        string getDescription();
-        double getPrice();
+        string dishType { get; }
+        double price { get; }
+        string GetDescription();
+        double GetPrice();
+        void print();
     }
+
 }
