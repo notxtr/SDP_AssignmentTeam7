@@ -16,7 +16,7 @@ namespace SDP_Assignment_Team7
 
         public override string getDescription()
         {
-            return base.DishType;
+            return base.Name;
         }
 
         public override double getPrice()
