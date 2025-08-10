@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace SDP_Assignment_Team7
 {
-    internal class MenuItem: MenuComponent
+    internal abstract class MenuItem: MenuComponent
     {
         private string name;
         private string description;
@@ -38,11 +38,15 @@ namespace SDP_Assignment_Team7
 
         public override void subPrint(string filter, int Type)
         {
-            Console.WriteLine($"{name} - ${price}");
-            Console.WriteLine($"Description: {description}");
-            Console.WriteLine("");
+                Console.WriteLine($"{name} - ${price}");
+                Console.WriteLine($"Description: {description}");
+                Console.WriteLine("");
 
         }
 
-    }
+        public abstract string getDescription();
+
+        public abstract double getPrice();
+
+}
 }

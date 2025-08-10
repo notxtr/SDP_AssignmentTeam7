@@ -1,7 +1,7 @@
 ﻿using SDP_Assignment_Team7;
 using System;
 
-internal class Restaurant
+internal abstract class Restaurant : Subject
 {
     private string name;
     private List<Customer> customers;
@@ -46,6 +46,8 @@ internal class Restaurant
     {
         offer = new NoOffer();
     }
+
+
 
 
 }
