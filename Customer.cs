@@ -29,7 +29,7 @@ internal class Customer : Observer
 
     public void update(string restaurantName, Offer offer)
     {
-        Console.WriteLine($"{this.name} is notified that {restaurantName} has a new offer: {offer}");
+        Console.WriteLine($"{this.name} is notified that {restaurantName} has a new offer: {offer.getDescription()}");
     }
 
     public List<Order> PreviousOrders { get; } = new();
