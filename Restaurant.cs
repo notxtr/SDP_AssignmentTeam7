@@ -10,13 +10,12 @@ internal abstract class Restaurant : Subject
     public string Name { get { return name; } set { name = value; } }
     public Offer Offer { get { return offer; } set { offer = value; } }
 
-    public Restaurant(string name)
+    public Restaurant(string name , Offer offer)
     {
         this.name = name;
         this.customers = new List<Customer>();
+        this.offer = offer;
     }
-
-
 
     public void addCustomer(Customer customer)
     {
