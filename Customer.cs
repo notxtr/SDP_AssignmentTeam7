@@ -31,4 +31,11 @@ internal class Customer : Observer
     {
         Console.WriteLine($"{this.name} is notified that {restaurantName} has a new offer: {offer}");
     }
+
+    public List<Order> PreviousOrders { get; } = new();
+
+    public void AddOrder(Order order)
+    {
+        if (order != null) PreviousOrders.Add(order);
+    }
 }
