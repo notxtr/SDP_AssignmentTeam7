@@ -21,7 +21,17 @@ namespace SDP_Assignment_Team7
             else _items.Add(oi);
         }
 
-        public double Subtotal() => _items.Sum(i => i.LineTotal);
+        public double Subtotal()
+        {
+            double sum = 0;
+            for (int i = 0; i < _items.Count; i++)
+            {
+                var unit = _items[i].Item.getPrice();         // <-- decorator-aware
+                sum += unit * _items[i].Quantity;
+            }
+            return sum;
+        }
+
 
         public Cart Clone()
         {
@@ -38,10 +48,13 @@ namespace SDP_Assignment_Team7
             for (int i = 0; i < _items.Count; i++)
             {
                 var it = _items[i];
-                Console.WriteLine($"{i + 1}. {it.Item.getDescription()} x{it.Quantity}  @ ${it.Item.Price:0.00}  = ${it.LineTotal:0.00}");
+                var unit = it.Item.getPrice();              
+                var line = unit * it.Quantity;
+                Console.WriteLine($"{i + 1}. {it.Item.getDescription()} x{it.Quantity}  @ ${unit:0.00}  = ${line:0.00}");
             }
             Console.WriteLine($"Subtotal: ${Subtotal():0.00}");
         }
+
 
         public bool IsEmpty => _items.Count == 0;
         public void Clear() => _items.Clear();

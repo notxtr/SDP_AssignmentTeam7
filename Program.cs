@@ -9,7 +9,7 @@ while (true)
 
 
     Console.Clear();
-Console.WriteLine("=== System Menu ===");
+Console.WriteLine("=== Welcome to Grabberoo! ===");
 Console.WriteLine("1) Restaurant UI (Create & Manage Restaurant)");
 Console.WriteLine("2) Customer UI (Browse & Place Orders)");
 Console.WriteLine("0) Exit");
