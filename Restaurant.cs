@@ -57,8 +57,10 @@ internal class Restaurant : Subject
 
     private readonly List<Order> orders = new(); // simple storage of completed carts
 
-    public double ApplyOffer(double amount)
-        => (Offer == null) ? amount : Offer.applyOffer(amount);
+    public double applyOffer(double amount)
+    {
+        return offer.applyOffer(amount);
+    }
 
     public void AddOrder(Order order)
     {

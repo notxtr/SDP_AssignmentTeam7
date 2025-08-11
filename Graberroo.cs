@@ -150,6 +150,9 @@ namespace SDP_Assignment_Team7
             Restaurant veggieCorner = new Restaurant("Veggie Corner");
             veggieCorner.Menu = veggieMenu;
 
+            kopiTiam.setOffer(new FixedOffer(10, "School holidays Offer"));
+            westernDiner.setOffer(new PercentageOffer(0.5, "Black Friday Sale"));
+
             // ===== Example: display them =====
             List<Restaurant> sampleRestaurants = new List<Restaurant> { kopiTiam, westernDiner, veggieCorner };
             Graberroo.getInstance().GetRestaurants.AddRange(sampleRestaurants);

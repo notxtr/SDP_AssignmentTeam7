@@ -399,6 +399,8 @@ namespace SDP_Assignment_Team7
 
             var snapshot = cart.Clone();
             var order = new Order(snapshot, customer);
+            order.TotalPrice = total;
+            order.AppliedOffer = r.Offer.Clone();
 
             try { r?.AddOrder(order); } catch { /* ignore if not implemented */ }
             try { customer?.AddOrder(order); } catch { /* ignore if not implemented */ }

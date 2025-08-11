@@ -15,11 +15,16 @@ namespace SDP_Assignment_Team7
         }
         public override string getDescription()
         {
-            return description;
+            return $"{description} - ${discount} Off (Fixed) ";
         }
         public override double applyOffer(double amt)
         {
             return amt - discount;
+        }
+
+        public override Offer Clone()
+        {
+            return new FixedOffer(this.discount, this.description);
         }
     }
 }
