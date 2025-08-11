@@ -38,7 +38,7 @@ namespace SDP_Assignment_Team7
             for (int i = 0; i < _items.Count; i++)
             {
                 var it = _items[i];
-                Console.WriteLine($"{i + 1}. {it.Item.Name} x{it.Quantity}  @ ${it.Item.Price:0.00}  = ${it.LineTotal:0.00}");
+                Console.WriteLine($"{i + 1}. {it.Item.getDescription()} x{it.Quantity}  @ ${it.Item.Price:0.00}  = ${it.LineTotal:0.00}");
             }
             Console.WriteLine($"Subtotal: ${Subtotal():0.00}");
         }

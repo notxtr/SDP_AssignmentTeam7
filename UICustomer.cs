@@ -153,7 +153,9 @@ namespace SDP_Assignment_Team7
                         Console.Write($"Qty for \"{mi.Name}\": ");
                         if (!int.TryParse(Console.ReadLine(), out int qty) || qty <= 0) qty = 1;
 
-                        cart.AddItem(new OrderItem(mi, qty));
+                        MenuItem Customized = ConfigureToppingsForDish(mi, AllOptions);
+
+                        cart.AddItem(new OrderItem(Customized, qty));
                         Console.WriteLine($"[+] Added {mi.Name} x{qty} to cart.");
                         Console.Write("Press ENTER to continue...");
                         Console.ReadLine();
@@ -168,6 +170,79 @@ namespace SDP_Assignment_Team7
                     Pause($"Could not resolve path: {ex.Message}");
                 }
             }
+        }
+
+        MenuItem ConfigureToppingsForDish(MenuItem baseDish, List<ToppingOption> AllOptions)
+        {
+            List<ToppingOption> options = new List<ToppingOption>();
+            for (int i = 0; i < AllOptions.Count; i++)
+            {
+                if (AllOptions[i].AllowedDishType == baseDish.DishType)
+                {
+                    options.Add(AllOptions[i]);
+                }
+            }
+
+            if (options.Count == 0)
+            {
+                Console.WriteLine("\nNo available modifications for this dish.");
+                return baseDish;
+            }
+
+            List<int> selectedIndices = new List<int>(); // store indices into "options"
+            MenuItem current = baseDish;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Customizing: " + current.getDescription());
+                Console.WriteLine("Current price: $" + current.getPrice().ToString("0.00"));
+                Console.WriteLine();
+
+                Console.WriteLine("Choose toppings by number (toggle).");
+                Console.WriteLine("0) No topping / Done");
+                for (int i = 0; i < options.Count; i++)
+                {
+                    bool chosen = false;
+                    for (int k = 0; k < selectedIndices.Count; k++)
+                    {
+                        if (selectedIndices[k] == i) { chosen = true; break; }
+                    }
+                    string mark = chosen ? "[x]" : "[ ]";
+                    string delta = options[i].PriceChange >= 0
+                        ? "(+$" + options[i].PriceChange.ToString("0.00") + ")"
+                        : "(-$" + Math.Abs(options[i].PriceChange).ToString("0.00") + ")";
+                    Console.WriteLine((i + 1) + ") " + mark + " " + options[i].Name + " " + delta);
+                }
+
+                Console.Write("\nPick one number (0 to finish): ");
+                string input = Console.ReadLine();
+                int pick;
+                if (!int.TryParse(input, out pick)) continue;
+
+                if (pick == 0) break;
+                if (pick < 1 || pick > options.Count) continue;
+
+                int idx = pick - 1;
+
+                int foundAt = -1;
+                for (int t = 0; t < selectedIndices.Count; t++)
+                {
+                    if (selectedIndices[t] == idx) { foundAt = t; break; }
+                }
+                if (foundAt >= 0) selectedIndices.RemoveAt(foundAt);
+                else selectedIndices.Add(idx);
+
+                current = baseDish;
+                for (int t = 0; t < selectedIndices.Count; t++)
+                {
+                    int si = selectedIndices[t];
+                    ToppingOption opt = options[si];
+                    current = new ToppingItem(current, opt.Name, opt.PriceChange);
+                }
+            }
+
+            return current;
         }
 
         // ----- Helpers -----
@@ -351,7 +426,53 @@ namespace SDP_Assignment_Team7
             Console.ReadLine();
         }
 
+        List<ToppingOption> AllOptions = new List<ToppingOption>
+{
+    // ===== Beverage (Kopi O, Teh Tarik, Orange Juice, etc.) =====
+    new ToppingOption("More Ice",        0.00, "Beverage"),
+    new ToppingOption("Less Ice",        0.50, "Beverage"),
+    new ToppingOption("No Ice",          0.50, "Beverage"),
+    new ToppingOption("Less Sugar",      0.00, "Beverage"),
+    new ToppingOption("No Sugar",        0.00, "Beverage"),
+    new ToppingOption("Extra Shot",      0.80, "Beverage"),
+    new ToppingOption("Oat Milk",        0.70, "Beverage"),
+    new ToppingOption("Large Size",      0.60, "Beverage"),
+    new ToppingOption("Warm/Hot",        0.00, "Beverage"),
+    new ToppingOption("Lemon Slice",     0.20, "Beverage"),
 
+    // ===== Main Course (Nasi Lemak, Omelette, Pancakes, etc.) =====
+    new ToppingOption("Extra Sambal",    0.30, "Main Course"),
+    new ToppingOption("Add Egg",         1.00, "Main Course"),
+    new ToppingOption("Add Chicken Wing",2.00, "Main Course"),
+    new ToppingOption("Extra Ikan Bilis",0.80, "Main Course"),
+    new ToppingOption("Extra Cheese",    1.20, "Main Course"),
+    new ToppingOption("Extra Vegetables",0.80, "Main Course"),
+    new ToppingOption("Add Rice",        0.50, "Main Course"),
+    new ToppingOption("Less Rice",      -0.30, "Main Course"),
+    new ToppingOption("No Chili",        0.00, "Main Course"),
+    new ToppingOption("Maple Syrup Refill",0.40,"Main Course"), // pancakes
+
+    // ===== Side Dish (Ikan Bilis & Peanuts, Hash Browns, Buttered Toast) =====
+    new ToppingOption("Extra Sauce",     0.30, "Side Dish"),
+    new ToppingOption("Add Cheese",      0.80, "Side Dish"),
+    new ToppingOption("Extra Portion",   0.80, "Side Dish"),
+    new ToppingOption("Crispier (Well-done)",0.00,"Side Dish"),
+    new ToppingOption("No Salt",         0.00, "Side Dish"),
+    new ToppingOption("Extra Butter",    0.30, "Side Dish"),
+    new ToppingOption("Add Peanuts",     0.50, "Side Dish"),
+    new ToppingOption("Ketchup on Side", 0.10, "Side Dish"),
+
+
+    // ===== Dessert (Banana Bread Slice, Blueberry Muffin) =====
+    new ToppingOption("Warm It Up",      0.00, "Dessert"),
+    new ToppingOption("Extra Syrup",     0.30, "Dessert"),
+    new ToppingOption("Add Ice Cream",   1.00, "Dessert"),
+    new ToppingOption("Whipped Cream",   0.50, "Dessert"),
+    new ToppingOption("Add Berries",     0.70, "Dessert"),
+    new ToppingOption("Chocolate Chips", 0.50, "Dessert"),
+    new ToppingOption("Less Sweet",      0.00, "Dessert"),
+
+};
 
 
 
