@@ -76,6 +76,46 @@ namespace SDP_Assignment_Team7
         }
 
 
+        private string getCategoryType()
+        {
+            // Show the submenus of the current menu
+            Console.WriteLine("Filter by Submenu:");
+            var submenus = new List<Menu>();
+
+            // Collect only direct submenu children
+            for (int i = 0; ; i++)
+            {
+                try
+                {
+                    var child = getChild(i);
+                    if (child is Menu submenu)
+                    {
+                        submenus.Add(submenu);
+                        Console.WriteLine($"{submenus.Count}. {submenu.Name}");
+                    }
+                }
+                catch
+                {
+                    break; // No more children
+                }
+            }
+
+            if (submenus.Count == 0)
+            {
+                Console.WriteLine("(No submenus to filter by)");
+                return ""; // signal no submenu available
+            }
+
+            Console.Write("Enter submenu number: ");
+            if (!int.TryParse(Console.ReadLine(), out int option) || option < 1 || option > submenus.Count)
+            {
+                Console.WriteLine("Invalid choice.");
+                return "";
+            }
+
+            return getChild(option-1).Name; // return selected submenu index (1-based)
+        }
+
 
         public override void print(string filter = "No filter")
         {
@@ -94,10 +134,24 @@ namespace SDP_Assignment_Team7
             if (filter == "type")
             {
                 Type = getFilterType();
+            } else if (filter == "category")
+            {
+                string cat = getCategoryType();
+                Iterator itera = createIterator(filter, Type);
+                while (itera.hasNext())
+                {
+                    MenuComponent menuComponent = (MenuComponent)itera.next();
+                    if (menuComponent.Name == cat)
+                    {
+                        menuComponent.subPrint(filter, Type);
+                    }
+                }
+
+                return;
             }
 
 
-            Iterator iter = createIterator(filter, Type);
+                Iterator iter = createIterator(filter, Type);
             while (iter.hasNext())
             {
                 MenuComponent menuComponent = (MenuComponent)iter.next();

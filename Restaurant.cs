@@ -1,11 +1,12 @@
 ﻿using SDP_Assignment_Team7;
 using System;
 
-internal abstract class Restaurant : Subject
+internal class Restaurant : Subject
 {
     private string name;
     private List<Customer> customers;
     private Offer offer;
+    private Menu menu;
 
     public string Name { get { return name; } set { name = value; } }
     public Offer Offer { get { return offer; } set { offer = value; } }
@@ -16,6 +17,12 @@ internal abstract class Restaurant : Subject
         this.customers = new List<Customer>();
     }
 
+
+    public Menu Menu
+    {
+        get { return menu; }
+        set { menu = value; }
+    }
 
 
     public void addCustomer(Customer customer)
@@ -48,6 +55,17 @@ internal abstract class Restaurant : Subject
     }
 
 
+    private readonly List<Order> orders = new(); // simple storage of completed carts
+
+    public double ApplyOffer(double amount)
+        => (Offer == null) ? amount : Offer.applyOffer(amount);
+
+    public void AddOrder(Order order)
+    {
+        if (order != null) orders.Add(order);
+    }
+
+    public IReadOnlyList<Order> Orders => orders;
 
 
 }

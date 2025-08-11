@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDP_Assignment_Team7;
+using System;
 
 internal class Customer : Observer
 {
@@ -29,5 +30,12 @@ internal class Customer : Observer
     public void update(string restaurantName, string offer)
     {
         Console.WriteLine($"{this.name} is notified that {restaurantName} has a new offer: {offer}");
+    }
+
+    public List<Order> PreviousOrders { get; } = new();
+
+    public void AddOrder(Order order)
+    {
+        if (order != null) PreviousOrders.Add(order);
     }
 }
