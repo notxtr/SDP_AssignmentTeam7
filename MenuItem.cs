@@ -48,5 +48,5 @@ namespace SDP_Assignment_Team7
 
         public abstract double getPrice();
 
-}
+    }
 }
