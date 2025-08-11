@@ -11,19 +11,13 @@ internal class Restaurant : Subject
     public string Name { get { return name; } set { name = value; } }
     public Offer Offer { get { return offer; } set { offer = value; } }
 
+    public Menu Menu { get { return menu; } set { menu = value; } }
+
     public Restaurant(string name)
     {
         this.name = name;
         this.customers = new List<Customer>();
     }
-
-
-    public Menu Menu
-    {
-        get { return menu; }
-        set { menu = value; }
-    }
-
 
     public void addCustomer(Customer customer)
     {
@@ -39,7 +33,7 @@ internal class Restaurant : Subject
     {
         foreach (Customer customer in customers)
         {
-            customer.update(this.Name, offer.getDescription());
+            customer.update(this.Name, offer);
         }
     }
 
