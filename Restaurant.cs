@@ -13,6 +13,9 @@ internal class Restaurant : Subject
 
     public Menu Menu { get { return menu; } set { menu = value; } }
 
+    // compatibility overload for old call sites
+    public Restaurant(string name) : this(name, null) { }
+
     public Restaurant(string name , Offer offer)
     {
         this.name = name;

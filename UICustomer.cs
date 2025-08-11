@@ -189,7 +189,7 @@ namespace SDP_Assignment_Team7
                 return baseDish;
             }
 
-            List<int> selectedIndices = new List<int>(); // store indices into "options"
+            List<int> selectedIndices = new List<int>(); 
             MenuItem current = baseDish;
 
             while (true)
@@ -246,6 +246,42 @@ namespace SDP_Assignment_Team7
         }
 
         // ----- Helpers -----
+        private void PromptPayment(double amount)
+        {
+            while (true)
+            {
+                Console.WriteLine();
+                Console.WriteLine("=== Choose Payment Method ===");
+                Console.WriteLine("1) Credit Card");
+                Console.WriteLine("2) PayPal");
+                Console.WriteLine("3) Cash on Delivery");
+                Console.WriteLine("0) Cancel");
+                Console.Write("Choice: ");
+
+                string c = (Console.ReadLine() ?? "").Trim();
+                PaymentStrategy strategy = null;
+
+                if (c == "0") { Console.WriteLine("Payment cancelled."); return; }
+                else if (c == "1") strategy = new CreditCard();
+                else if (c == "2") strategy = new PayPal();
+                else if (c == "3") strategy = new Cash();
+                else { Console.WriteLine("Invalid choice."); continue; }
+
+                var ctx = new PaymentContext();
+                ctx.SetStrategy(strategy);
+
+                bool ok = ctx.Process(amount);
+                if (ok)
+                {
+                    Console.WriteLine("Thank you! Payment completed.");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Payment failed. Try again?");
+                }
+            }
+        }
 
 
         private void PrintMenuTreeWithPaths(Menu root)
@@ -386,7 +422,7 @@ namespace SDP_Assignment_Team7
             Console.WriteLine("=== Checkout ===");
             cart.Print();
 
-            double subtotal = cart.Subtotal();
+            double subtotal = cart.Subtotal();                 
             double total = r?.Offer != null ? r.Offer.applyOffer(subtotal) : subtotal;
             if (total < 0) total = 0;
 
@@ -396,15 +432,18 @@ namespace SDP_Assignment_Team7
             var yn = (Console.ReadLine() ?? "").Trim().ToLower();
             if (yn != "y") { Console.WriteLine("Cancelled."); return; }
 
-
+            // Place order
             var snapshot = cart.Clone();
             var order = new Order(snapshot, customer);
 
-            try { r?.AddOrder(order); } catch { /* ignore if not implemented */ }
-            try { customer?.AddOrder(order); } catch { /* ignore if not implemented */ }
+            try { r?.AddOrder(order); } catch { }
+            try { customer?.AddOrder(order); } catch { }
 
             Console.WriteLine("[✓] Order placed!");
+ 
             cart.Clear();
+
+            PromptPayment(total);
         }
 
         private static void Header(string title)
