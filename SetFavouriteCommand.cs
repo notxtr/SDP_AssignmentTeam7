@@ -4,20 +4,36 @@ namespace SDP_Assignment_Team7
 {
     internal class SetFavouriteCommand : Command
     {
-        private FavouriteOrder myOrder;
+        private Customer customer;
+        private Cart cart;
+        private FavouriteOrder createdOrder;
 
-        public SetFavouriteCommand(FavouriteOrder order)
+        public SetFavouriteCommand(Customer customer, Cart cart)
         {
-            this.myOrder = order;
+            this.customer = customer;
+            this.cart = cart.Clone();
         }
+
         public void execute()
         {
-            FavouriteOrder.addToFavourite();
+            createdOrder = new FavouriteOrder(cart, customer);
+            FavouriteOrder.AddToFavourite(customer, cart);
+            Console.WriteLine("Order saved to favourites!");
         }
 
         public void undo()
         {
-            Console.WriteLine($"Undoing favourite command");
+            if (createdOrder != null)
+            {
+                if (FavouriteOrder.RemoveFavourite(customer, createdOrder))
+                {
+                    Console.WriteLine("Favourite order removed.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to remove favourite order.");
+                }
+            }
         }
     }
 }

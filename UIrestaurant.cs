@@ -12,7 +12,47 @@ namespace SDP_Assignment_Team7
     /// </summary>
     internal sealed class UIRestaurant
     {
+        public void LoginAndManageRestaurant()
+        {
+            var restaurants = Graberroo.getInstance().GetRestaurants;
+            if (restaurants.Count == 0)
+            {
+                Pause("No restaurants exist yet. Create one first.");
+                return;
+            }
 
+            try
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    Header("Select Your Restaurant (L=logout)");
+
+                    // Display all restaurants with numbers
+                    for (int i = 0; i < restaurants.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}) {restaurants[i].Name}");
+                    }
+
+                    var input = ReadOrLogout("\nEnter restaurant number (0 to cancel): ").Trim();
+                    if (input == "0") return;
+
+                    if (int.TryParse(input, out int index) && index > 0 && index <= restaurants.Count)
+                    {
+                        // Found valid restaurant - enter management
+                        ManageRestaurant(restaurants[index - 1]);
+                    }
+                    else
+                    {
+                        Pause("Invalid selection. Please try again.");
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                
+            }
+        }
         public Restaurant? CreateRestaurant()
         {
             try
@@ -50,6 +90,7 @@ namespace SDP_Assignment_Team7
 
                 Pause("Saved.");
                 Graberroo.getInstance().GetRestaurants.Add(restaurant);
+                ManageRestaurant(restaurant);
                 return restaurant;
             }
             catch (OperationCanceledException)
@@ -123,6 +164,99 @@ namespace SDP_Assignment_Team7
             catch (OperationCanceledException)
             {
                 return null; // bubble logout up to caller
+            }
+        }
+
+        public void ManageRestaurant(Restaurant restaurant)
+        {
+            try
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    Header($"Managing {restaurant.Name} (L = logout)");
+                    Console.WriteLine($"Current Offer: {(restaurant.Offer != null ? restaurant.Offer.getDescription() : "None")}");
+                    Console.WriteLine("1) Edit Menu");
+                    Console.WriteLine("2) Create/Update Offer");
+                    Console.WriteLine("3) Remove Current Offer");
+                    Console.WriteLine("0) Back");
+
+                    var choice = ReadOrLogout("Choice: ").Trim();
+                    if (choice == "0") break;
+
+                    switch (choice)
+                    {
+                        case "1":
+                            var newMenu = BuildMenuInteractively();
+                            if (newMenu != null)
+                            {
+                                restaurant.Menu = newMenu;
+                                Pause("Menu updated successfully!");
+                            }
+                            break;
+
+                        case "2":
+                            CreateOrUpdateOffer(restaurant);
+                            break;
+
+                        case "3":
+                            restaurant.removeOffer();
+                            Pause("Offer removed. Customers will no longer see this promotion.");
+                            break;
+
+                        default:
+                            Pause("Invalid choice.");
+                            break;
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+        }
+
+        private void CreateOrUpdateOffer(Restaurant restaurant)
+        {
+            Console.Clear();
+            Header($"Create/Update Offer for {restaurant.Name}");
+
+            Console.WriteLine("Select Offer Type:");
+            Console.WriteLine("1) Percentage Discount");
+            Console.WriteLine("2) Fixed Discount");
+            Console.WriteLine("0) Cancel");
+
+            var choice = ReadOrLogout("Choice: ").Trim();
+            if (choice == "0") return;
+
+            try
+            {
+                Offer newOffer = null;
+                string description = ReadOrLogout("Enter offer description: ");
+
+                switch (choice)
+                {
+                    case "1":
+                        double percent = double.Parse(ReadOrLogout("Enter discount fraction (e.g. 10%): "));
+                        newOffer = new PercentageOffer(percent, description);
+                        break;
+
+                    case "2":
+                        double amount = double.Parse(ReadOrLogout("Enter discount amount (e.g. $5): "));
+                        newOffer = new FixedOffer(amount, description);
+                        break;
+
+                    default:
+                        Pause("Invalid choice.");
+                        return;
+                }
+
+                restaurant.setOffer(newOffer);
+                Pause($"Offer set successfully! All subscribers will be notified.");
+            }
+            catch (FormatException)
+            {
+                Pause("Invalid number format. Please enter a valid number.");
             }
         }
 
