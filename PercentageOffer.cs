@@ -19,7 +19,7 @@ namespace SDP_Assignment_Team7
         }
         public override double applyOffer(double amt)
         {
-            return amt * (1- discount);
+            return amt * (discount / 100);
         }
     }
 }

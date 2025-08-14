@@ -38,23 +38,68 @@ namespace SDP_Assignment_Team7
             while (true)
             {
                 Console.Clear();
-                Header("Restaurants (enter number, B to go back)");
+                Header("Restaurants (enter number, S=subscribe, U=unsubscribe, B=back)");
                 if (restaurants.Count == 0)
                 {
                     Pause("No restaurants available. Press ENTER to go back...");
                     return;
                 }
 
+                // Display restaurants with subscription status
                 for (int i = 0; i < restaurants.Count; i++)
-                    Console.WriteLine($"{i + 1}) {restaurants[i].Name}");
+                {
+                    string subStatus = customer.Offers.Contains(restaurants[i]) ? "[SUBSCRIBED]" : "";
+                    string offerStatus = customer.Offers.Contains(restaurants[i]) && restaurants[i].Offer != null ? $"(Offer: {restaurants[i].Offer.getDescription()})" : "";
+                    Console.WriteLine($"{i + 1}) {restaurants[i].Name} {subStatus} {offerStatus}");
+                }
 
                 Console.Write("\nSelect: ");
-                var input = Console.ReadLine()?.Trim();
-                if (string.Equals(input, "b", StringComparison.OrdinalIgnoreCase)) return;
+                var input = Console.ReadLine()?.Trim().ToLower();
 
-                if (int.TryParse(input, out int idx) && idx >= 1 && idx <= restaurants.Count)
+                if (input == "b") return;
+
+                // Subscription management
+                if (input == "s" || input == "u")
                 {
-                    BrowseMenuAndAdd(restaurants[idx - 1]);
+                    Console.Write($"Enter restaurant number to {(input == "s" ? "subscribe" : "unsubscribe")}: ");
+                    if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 1 && idx <= restaurants.Count)
+                    {
+                        Restaurant selected = restaurants[idx - 1];
+                        if (input == "s")
+                        {
+                            if (!customer.Offers.Contains(selected))
+                            {
+                                customer.addNotification(selected);
+                                Pause($"Subscribed to {selected.Name}'s offers!");
+                            }
+                            else
+                            {
+                                Pause("You're already subscribed to this restaurant.");
+                            }
+                        }
+                        else
+                        {
+                            if (customer.Offers.Contains(selected))
+                            {
+                                customer.removeNotification(selected);
+                                Pause($"Unsubscribed from {selected.Name}'s offers.");
+                            }
+                            else
+                            {
+                                Pause("You're not subscribed to this restaurant.");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Pause("Invalid restaurant number.");
+                    }
+                    continue;
+                }
+
+                if (int.TryParse(input, out int selection) && selection >= 1 && selection <= restaurants.Count)
+                {
+                    BrowseMenuAndAdd(restaurants[selection - 1]);
                 }
                 else
                 {
