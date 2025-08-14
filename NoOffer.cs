@@ -8,13 +8,19 @@ namespace SDP_Assignment_Team7
 {
     internal class NoOffer : Offer
     {
-        public override string getDescription()
+        public string getDescription()
         {
             return "No offer";
         }
-        public override double applyOffer(double amt)
+        public double applyOffer(double amt)
         {
             return amt;
+        }
+
+        public Offer Clone()
+        {
+            Offer clone = new NoOffer();
+            return clone;
         }
     }
 }

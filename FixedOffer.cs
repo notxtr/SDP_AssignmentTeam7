@@ -8,21 +8,23 @@ namespace SDP_Assignment_Team7
 {
     internal class FixedOffer: Offer
     {
+        private double discount;
+        private string description;
         public FixedOffer(double discount, string description)
         {
             this.discount = discount;
             this.description = description;
         }
-        public override string getDescription()
+        public string getDescription()
         {
             return $"{description} - ${discount} Off (Fixed) ";
         }
-        public override double applyOffer(double amt)
+        public double applyOffer(double amt)
         {
             return amt - discount;
         }
 
-        public override Offer Clone()
+        public Offer Clone()
         {
             return new FixedOffer(this.discount, this.description);
         }
