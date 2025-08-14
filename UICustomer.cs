@@ -22,6 +22,7 @@ namespace SDP_Assignment_Team7
                 Header($"Welcome, {customer.Name}");
                 Console.WriteLine("1) Browse restaurants");
                 Console.WriteLine("2) View past orders");
+                Console.WriteLine("3) Favourite Orders");
                 Console.WriteLine("0) Logout");
                 Console.Write("\nChoice: ");
 
@@ -29,6 +30,7 @@ namespace SDP_Assignment_Team7
                 if (choice == "0") return;
                 if (choice == "1") BrowseRestaurants(restaurants);
                 else if (choice == "2") ShowPastOrders();
+                else if (choice == "3") ShowFavouriteOrders();
                 else Pause("Invalid choice. Press ENTER to continue...");
             }
         }
@@ -104,6 +106,77 @@ namespace SDP_Assignment_Team7
                 else
                 {
                     Pause("Invalid selection. Press ENTER to try again...");
+                }
+            }
+        }
+
+        private void ShowFavouriteOrders()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Header("Favourite Orders (U=unfavourite, B=back)");
+
+                var favourites = FavouriteOrder.GetFavourites(customer);
+                if (favourites.Count == 0)
+                {
+                    Console.WriteLine("(No favourite orders saved.)");
+                    Pause("Press ENTER to return…");
+                    return;
+                }
+
+                for (int i = 0; i < favourites.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}) Favourite Order:");
+                    try
+                    {
+                        favourites[i].Print();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("  (Unable to print order details)");
+                    }
+                    Console.WriteLine();
+                }
+
+                Console.Write("Select favourite order to order again (number) or command (U/B): ");
+                var input = Console.ReadLine()?.Trim().ToLower();
+
+                if (input == "b") return;
+                if (input == "u")
+                {
+                    Console.Write("Enter order number to unfavourite: ");
+                    input = Console.ReadLine()?.Trim();
+
+                    if (int.TryParse(input, out int selection) && selection >= 1 && selection <= favourites.Count)
+                    {
+
+                        var orderToRemove = favourites[selection - 1];
+
+                        if (FavouriteOrder.RemoveFavourite(customer, orderToRemove))
+                        {
+                            Console.WriteLine("Favourite order removed.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to remove favourite order.");
+                        }
+                        Pause("Press ENTER to continue...");
+                        break;
+                    }
+                    else
+                    {
+                        Pause("Invalid selection. Press ENTER to continue...");
+                    }
+                }
+                else if (int.TryParse(input, out int orderSelection) && orderSelection >= 1 && orderSelection <= favourites.Count)
+                {
+                    // Handle ordering a favorite again (existing functionality)
+                    // ...
+                }
+                else
+                {
+                    Pause("Invalid selection. Press ENTER to continue...");
                 }
             }
         }
@@ -443,12 +516,20 @@ namespace SDP_Assignment_Team7
 
 
             var snapshot = cart.Clone();
-            var order = new Order(snapshot, customer);
+            var order = new NormalOrder(snapshot, customer);
 
             try { r?.AddOrder(order); } catch { /* ignore if not implemented */ }
             try { customer?.AddOrder(order); } catch { /* ignore if not implemented */ }
 
             Console.WriteLine("[✓] Order placed!");
+
+            Console.Write("Would you like to save this order as a favourite? (y/n): ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
+            {
+                var command = new SetFavouriteCommand(customer, snapshot);
+                command.execute();
+            }
+
             cart.Clear();
         }
 
