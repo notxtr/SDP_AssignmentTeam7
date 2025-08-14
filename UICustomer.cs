@@ -115,7 +115,7 @@ namespace SDP_Assignment_Team7
             while (true)
             {
                 Console.Clear();
-                Header("Favourite Orders (U=unfavourite, B=back)");
+                Header("Favourite Orders (O=order, U=unfavourite, B=back)");
 
                 var favourites = FavouriteOrder.GetFavourites(customer);
                 if (favourites.Count == 0)
@@ -125,60 +125,71 @@ namespace SDP_Assignment_Team7
                     return;
                 }
 
+                // Display favourites...
                 for (int i = 0; i < favourites.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}) Favourite Order:");
-                    try
-                    {
-                        favourites[i].Print();
-                    }
-                    catch
-                    {
-                        Console.WriteLine("  (Unable to print order details)");
-                    }
+                    favourites[i].Print();
                     Console.WriteLine();
                 }
 
-                Console.Write("Select favourite order to order again (number) or command (U/B): ");
+                Console.Write("Enter number to order, or command (O/U/B): ");
                 var input = Console.ReadLine()?.Trim().ToLower();
 
                 if (input == "b") return;
+
                 if (input == "u")
                 {
-                    Console.Write("Enter order number to unfavourite: ");
-                    input = Console.ReadLine()?.Trim();
-
-                    if (int.TryParse(input, out int selection) && selection >= 1 && selection <= favourites.Count)
+                    HandleUnfavourite(favourites);
+                    break; // Refresh list
+                }
+                else if (input == "o")
+                {
+                    Console.Write("Enter order number: ");
+                    if (!int.TryParse(Console.ReadLine(), out int orderNum) || orderNum < 1 || orderNum > favourites.Count)
                     {
-
-                        var orderToRemove = favourites[selection - 1];
-
-                        if (FavouriteOrder.RemoveFavourite(customer, orderToRemove))
-                        {
-                            Console.WriteLine("Favourite order removed.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Failed to remove favourite order.");
-                        }
-                        Pause("Press ENTER to continue...");
-                        break;
+                        Pause("Invalid number. Press ENTER to continue...");
+                        continue;
+                    }
+                    FavouriteOrderFacade.PlaceOrderFromFavourite(customer, favourites[orderNum - 1]);
+                    Pause("Press ENTER to return to menu...");
+                    return;
+                }
+                else if (int.TryParse(input, out int directSelection))
+                {
+                    if (directSelection >= 1 && directSelection <= favourites.Count)
+                    {
+                        FavouriteOrderFacade.PlaceOrderFromFavourite(customer, favourites[directSelection - 1]);
+                        Pause("Press ENTER to return to menu...");
+                        return;
                     }
                     else
                     {
-                        Pause("Invalid selection. Press ENTER to continue...");
+                        Pause($"Please enter a number between 1 and {favourites.Count}. Press ENTER to continue...");
                     }
-                }
-                else if (int.TryParse(input, out int orderSelection) && orderSelection >= 1 && orderSelection <= favourites.Count)
-                {
-                    // Handle ordering a favorite again (existing functionality)
-                    // ...
                 }
                 else
                 {
-                    Pause("Invalid selection. Press ENTER to continue...");
+                    Pause("Invalid input. Press ENTER to continue...");
                 }
             }
+        }
+
+        private void HandleUnfavourite(List<FavouriteOrder> favourites)
+        {
+            Console.Write("Enter order number to unfavourite: ");
+            if (int.TryParse(Console.ReadLine(), out int selection) && selection >= 1 && selection <= favourites.Count)
+            {
+                if (FavouriteOrder.RemoveFavourite(customer, favourites[selection - 1]))
+                    Console.WriteLine("Favourite removed!");
+                else
+                    Console.WriteLine("Failed to remove favourite.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection.");
+            }
+            Pause("Press ENTER to continue...");
         }
 
         // ========= New: browse menu, add to cart by PATH, checkout here =========
