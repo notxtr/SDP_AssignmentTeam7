@@ -2,7 +2,7 @@
 
 namespace SDP_Assignment_Team7
 {
-    internal abstract class Order
+    internal class Order
     {
         private SetFavouriteCommand setFavouriteCommand;
         private Cart cart;

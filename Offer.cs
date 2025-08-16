@@ -12,6 +12,7 @@ namespace SDP_Assignment_Team7
         public abstract string getDescription();
         public abstract double applyOffer(double amt);
 
+
         public abstract Offer Clone();
     }
 }
