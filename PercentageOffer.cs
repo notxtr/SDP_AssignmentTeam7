@@ -17,11 +17,12 @@ namespace SDP_Assignment_Team7
         }
         public string getDescription()
         {
-            return $"{description} - {discount * 100}% OFF ";
+            return $"{description} - {discount:0}% OFF";
         }
         public double applyOffer(double amt)
         {
-            return amt * (discount / 100);
+            var discounted = amt * (1 - (discount / 100));
+            return double.Round(discounted, 2, MidpointRounding.AwayFromZero);
         }
 
         public Offer Clone()
