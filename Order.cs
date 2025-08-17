@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SDP_Assignment_Team7.OrderStates;
+using System;
+using System.Collections.Generic;
 
 namespace SDP_Assignment_Team7
 {
@@ -13,16 +15,29 @@ namespace SDP_Assignment_Team7
         private double totalPrice;
         private Offer appliedOffer;
 
+        private OrderState orderState;
+
         public Order(Cart cart, Customer customer)
         {
             this.cart = cart;
             this.customer = customer;
+            this.orderState = new CreatedState(this);
         }
 
         public SetFavouriteCommand SetFavouriteCommand
         {
             get { return setFavouriteCommand; }
             set { setFavouriteCommand = value; }
+        }
+
+        public void SetState(OrderState state)
+        {
+            this.orderState = state;
+        }
+
+        public OrderState State
+        {
+            get { return orderState; }
         }
 
         public void Print()
@@ -33,6 +48,12 @@ namespace SDP_Assignment_Team7
                 Console.WriteLine(appliedOffer.getDescription());
                 Console.WriteLine($"Total Paid: ${TotalPrice:0.00}");
             }
+
+            Console.WriteLine($"Delivery Address: {Address}");
+            Console.WriteLine($"Delivery Note: {delieveryNote}");
+
+            Console.WriteLine($"Order State: {orderState.Name()}");
+
         }
 
         public Offer AppliedOffer

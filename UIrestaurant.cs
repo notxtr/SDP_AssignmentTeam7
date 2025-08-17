@@ -179,6 +179,7 @@ namespace SDP_Assignment_Team7
                     Console.WriteLine("1) Edit Menu");
                     Console.WriteLine("2) Create/Update Offer");
                     Console.WriteLine("3) Remove Current Offer");
+                    Console.WriteLine("4) View Orders");
                     Console.WriteLine("0) Back");
 
                     var choice = ReadOrLogout("Choice: ").Trim();
@@ -204,6 +205,10 @@ namespace SDP_Assignment_Team7
                             Pause("Offer removed. Customers will no longer see this promotion.");
                             break;
 
+                        case "4":
+                            ViewOrders(restaurant);
+                            break;
+
                         default:
                             Pause("Invalid choice.");
                             break;
@@ -212,6 +217,76 @@ namespace SDP_Assignment_Team7
             }
             catch (OperationCanceledException)
             {
+                throw;
+            }
+        }
+
+        public void ViewOrders(Restaurant restaurant)
+        {
+            try
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    Header($"Orders for {restaurant.Name} (L = logout)");
+
+                    // assume restaurant.Orders is List<Order>
+                    var orders = restaurant.Orders;
+                    if (orders == null || orders.Count == 0)
+                    {
+                        Console.WriteLine("(No orders yet.)");
+                        Pause();
+                        return;
+                    }
+
+                    // brief summary list
+                    for (int i = 0; i < orders.Count; i++)
+                    {
+                        var o = orders[i];
+
+                        Console.WriteLine(
+                            $"{i + 1}) ${o.TotalPrice:0.00}");
+                    }
+                    Console.WriteLine("0) Back");
+
+                    var input = ReadOrLogout("\nSelect an order to view (0 to back): ").Trim();
+                    if (input == "0") return;
+
+                    if (!int.TryParse(input, out int idx) || idx < 1 || idx > orders.Count)
+                    {
+                        Pause("Invalid selection.");
+                        continue;
+                    }
+
+                    var order = orders[idx - 1];
+
+                    Console.Clear();
+                    Header($"Order #{idx} (L = logout)");
+                    try
+                    {
+                        order.Print();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("(order.Print() not implemented)");
+                    }
+
+                    // show restaurant-side next action from state
+                    try
+                    {
+                        order.State.getRestaurantAction(); // as requested
+                    }
+                    catch
+                    {
+                        Console.WriteLine("\n(next action unavailable)");
+                    }
+
+                    Pause();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // bubble logout
                 throw;
             }
         }

@@ -2,6 +2,7 @@
 using SDP_Assignment_Team7;
 
 Graberroo.getInstance().initializeData();
+var Customer = Graberroo.getInstance().getAccount();
 
 
 while (true)
@@ -84,10 +85,9 @@ static void RunRestaurantUI()
 
 }
 
-static void RunCustomerUI()
+ void RunCustomerUI()
 {
     var UI = new UICustomer();
-    var Customer = Graberroo.getInstance().getAccount();
     List<Restaurant> restaurants = Graberroo.getInstance().GetRestaurants;
     UI.Start(Customer, restaurants);
 

@@ -472,21 +472,65 @@ namespace SDP_Assignment_Team7
                 return;
             }
 
-            for (int i = 0; i < orders.Count; i++)
+            while (true)
             {
-                Console.WriteLine($"Order #{i + 1}:");
+                Console.Clear();
+                Header("Past Orders (0 = back, L = logout)");
+
+
+                for (int i = 0; i < orders.Count; i++)
+                {
+
+                    try
+                    {
+
+                        var total = orders[i].TotalPrice; 
+                        var state = orders[i].State.Name();
+                        Console.WriteLine($"{i + 1}) {state}  ${total:0.00}");
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"{i + 1}) Order");
+                    }
+                }
+
+
+                Console.WriteLine("\nSelect an order to view (0 to back): ");
+                var sel = Console.ReadLine().Trim();
+                if (sel == "0") return;
+
+                if (!int.TryParse(sel, out int idx) || idx < 1 || idx > orders.Count)
+                {
+                    Pause("Invalid selection.");
+                    continue;
+                }
+
+                var order = orders[idx - 1];
+
+                Console.Clear();
+                Header($"Order #{idx} (L = logout)");
+
                 try
                 {
-                    orders[i].Print();
+                    order.Print(); // detailed order view
                 }
                 catch
                 {
-                    Console.WriteLine("  (Unable to print cart details)");
+                    Console.WriteLine("(Unable to print order details)");
                 }
-                Console.WriteLine();
-            }
 
-            Pause("End of list. Press ENTER to return…");
+                try
+                {
+                    order.State.getCustomerAction();
+
+                }
+                catch
+                {
+                    Console.WriteLine("\n(next action unavailable)");
+                }
+
+                Pause(""); // stay on detail view until user proceeds
+            }
         }
 
         private static string ChooseFilter()
@@ -604,9 +648,9 @@ namespace SDP_Assignment_Team7
             var order = new NormalOrder(snapshot, customer);
             order.TotalPrice = total;
             order.AppliedOffer = r.Offer.Clone();
+            customer.AddOrder(order);
+            r.AddOrder(order)
 
-            try { r?.AddOrder(order); } catch { }
-            try { customer?.AddOrder(order); } catch { }
 
             Console.WriteLine("[✓] Order placed!");
 
