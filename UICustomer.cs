@@ -649,7 +649,7 @@ namespace SDP_Assignment_Team7
             order.TotalPrice = total;
             order.AppliedOffer = r.Offer.Clone();
             customer.AddOrder(order);
-            r.AddOrder(order)
+            r.AddOrder(order);
 
 
             Console.WriteLine("[✓] Order placed!");
