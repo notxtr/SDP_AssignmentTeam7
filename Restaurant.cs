@@ -63,5 +63,16 @@ internal class Restaurant : Subject
 
     public IReadOnlyList<Order> Orders => orders;
 
+    private Search searchStrategy = new SearchByName(); // Default to name search
 
+    public void SetSearchStrategy(Search strategy)
+    {
+        this.searchStrategy = strategy;
+    }
+
+    public List<Restaurant> SearchRestaurants(List<Restaurant> restaurants, string query)
+    {
+        return searchStrategy.ExecuteSearch(restaurants, query);
+    }
 }
+

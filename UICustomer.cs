@@ -37,10 +37,11 @@ namespace SDP_Assignment_Team7
 
         private void BrowseRestaurants(List<Restaurant> restaurants)
         {
+            Restaurant searchController = new Restaurant("Search Controller");
             while (true)
             {
                 Console.Clear();
-                Header("Restaurants (enter number, S=subscribe, U=unsubscribe, B=back)");
+                Header("Restaurants (enter number, S=subscribe, U=unsubscribe, F=filter, N=name search, B=back)");
                 if (restaurants.Count == 0)
                 {
                     Pause("No restaurants available. Press ENTER to go back...");
@@ -57,6 +58,19 @@ namespace SDP_Assignment_Team7
 
                 Console.Write("\nSelect: ");
                 var input = Console.ReadLine()?.Trim().ToLower();
+
+                if (input == "n") // Name search
+                {
+                    Console.Write("Enter restaurant name to search: ");
+                    var query = Console.ReadLine();
+                    var results = searchController.SearchRestaurants(restaurants, query);
+
+                    var selectedRestaurant = SelectFromSearchResults(results);
+                    if (selectedRestaurant != null)
+                    {
+                        BrowseMenuAndAdd(selectedRestaurant);
+                    }
+                }
 
                 if (input == "b") return;
 
@@ -110,6 +124,30 @@ namespace SDP_Assignment_Team7
             }
         }
 
+        private Restaurant SelectFromSearchResults(List<Restaurant> results)
+        {
+            if (results == null || results.Count == 0)
+            {
+                Pause("No restaurants found. Press ENTER to continue...");
+                return null;
+            }
+
+            Console.Clear();
+            Header("Search Results");
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}) {results[i].Name}");
+            }
+
+            Console.Write("\nSelect restaurant (number) or 0 to cancel: ");
+            if (int.TryParse(Console.ReadLine(), out int selection) && selection > 0 && selection <= results.Count)
+            {
+                return results[selection - 1];
+            }
+
+            return null;
+        }
         private void ShowFavouriteOrders()
         {
             while (true)
@@ -527,7 +565,7 @@ namespace SDP_Assignment_Team7
 
 
             var snapshot = cart.Clone();
-            var order = new Order(snapshot, customer);
+            var order = new NormalOrder(snapshot, customer);
             order.TotalPrice = total;
             order.AppliedOffer = r.Offer.Clone();
 
