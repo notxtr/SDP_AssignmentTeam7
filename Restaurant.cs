@@ -51,8 +51,10 @@ internal class Restaurant : Subject
 
     private readonly List<Order> orders = new(); // simple storage of completed carts
 
-    public double ApplyOffer(double amount)
-        => (Offer == null) ? amount : Offer.applyOffer(amount);
+    public double applyOffer(double amount)
+    {
+        return offer.applyOffer(amount);
+    }
 
     public void AddOrder(Order order)
     {
@@ -61,5 +63,16 @@ internal class Restaurant : Subject
 
     public IReadOnlyList<Order> Orders => orders;
 
+    private Search searchStrategy = new SearchByName(); // Default to name search
 
+    public void SetSearchStrategy(Search strategy)
+    {
+        this.searchStrategy = strategy;
+    }
+
+    public List<Restaurant> SearchRestaurants(List<Restaurant> restaurants, string query)
+    {
+        return searchStrategy.ExecuteSearch(restaurants, query);
+    }
 }
+

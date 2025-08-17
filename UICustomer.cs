@@ -22,6 +22,7 @@ namespace SDP_Assignment_Team7
                 Header($"Welcome, {customer.Name}");
                 Console.WriteLine("1) Browse restaurants");
                 Console.WriteLine("2) View past orders");
+                Console.WriteLine("3) Favourite Orders");
                 Console.WriteLine("0) Logout");
                 Console.Write("\nChoice: ");
 
@@ -29,38 +30,204 @@ namespace SDP_Assignment_Team7
                 if (choice == "0") return;
                 if (choice == "1") BrowseRestaurants(restaurants);
                 else if (choice == "2") ShowPastOrders();
+                else if (choice == "3") ShowFavouriteOrders();
                 else Pause("Invalid choice. Press ENTER to continue...");
             }
         }
 
         private void BrowseRestaurants(List<Restaurant> restaurants)
         {
+            Restaurant searchController = new Restaurant("Search Controller");
             while (true)
             {
                 Console.Clear();
-                Header("Restaurants (enter number, B to go back)");
+                Header("Restaurants (enter number, S=subscribe, U=unsubscribe, F=filter, N=name search, B=back)");
                 if (restaurants.Count == 0)
                 {
                     Pause("No restaurants available. Press ENTER to go back...");
                     return;
                 }
 
+                // Display restaurants with subscription status
                 for (int i = 0; i < restaurants.Count; i++)
-                    Console.WriteLine($"{i + 1}) {restaurants[i].Name}");
+                {
+                    string subStatus = customer.Offers.Contains(restaurants[i]) ? "[SUBSCRIBED]" : "";
+                    string offerStatus = customer.Offers.Contains(restaurants[i]) && restaurants[i].Offer != null ? $"(Offer: {restaurants[i].Offer.getDescription()})" : "";
+                    Console.WriteLine($"{i + 1}) {restaurants[i].Name} {subStatus} {offerStatus}");
+                }
 
                 Console.Write("\nSelect: ");
-                var input = Console.ReadLine()?.Trim();
-                if (string.Equals(input, "b", StringComparison.OrdinalIgnoreCase)) return;
+                var input = Console.ReadLine()?.Trim().ToLower();
 
-                if (int.TryParse(input, out int idx) && idx >= 1 && idx <= restaurants.Count)
+                if (input == "n") // Name search
                 {
-                    BrowseMenuAndAdd(restaurants[idx - 1]);
+                    Console.Write("Enter restaurant name to search: ");
+                    var query = Console.ReadLine();
+                    var results = searchController.SearchRestaurants(restaurants, query);
+
+                    var selectedRestaurant = SelectFromSearchResults(results);
+                    if (selectedRestaurant != null)
+                    {
+                        BrowseMenuAndAdd(selectedRestaurant);
+                    }
+                }
+
+                if (input == "b") return;
+
+                // Subscription management
+                if (input == "s" || input == "u")
+                {
+                    Console.Write($"Enter restaurant number to {(input == "s" ? "subscribe" : "unsubscribe")}: ");
+                    if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 1 && idx <= restaurants.Count)
+                    {
+                        Restaurant selected = restaurants[idx - 1];
+                        if (input == "s")
+                        {
+                            if (!customer.Offers.Contains(selected))
+                            {
+                                customer.addNotification(selected);
+                                Pause($"Subscribed to {selected.Name}'s offers!");
+                            }
+                            else
+                            {
+                                Pause("You're already subscribed to this restaurant.");
+                            }
+                        }
+                        else
+                        {
+                            if (customer.Offers.Contains(selected))
+                            {
+                                customer.removeNotification(selected);
+                                Pause($"Unsubscribed from {selected.Name}'s offers.");
+                            }
+                            else
+                            {
+                                Pause("You're not subscribed to this restaurant.");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Pause("Invalid restaurant number.");
+                    }
+                    continue;
+                }
+
+                if (int.TryParse(input, out int selection) && selection >= 1 && selection <= restaurants.Count)
+                {
+                    BrowseMenuAndAdd(restaurants[selection - 1]);
                 }
                 else
                 {
                     Pause("Invalid selection. Press ENTER to try again...");
                 }
             }
+        }
+
+        private Restaurant SelectFromSearchResults(List<Restaurant> results)
+        {
+            if (results == null || results.Count == 0)
+            {
+                Pause("No restaurants found. Press ENTER to continue...");
+                return null;
+            }
+
+            Console.Clear();
+            Header("Search Results");
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}) {results[i].Name}");
+            }
+
+            Console.Write("\nSelect restaurant (number) or 0 to cancel: ");
+            if (int.TryParse(Console.ReadLine(), out int selection) && selection > 0 && selection <= results.Count)
+            {
+                return results[selection - 1];
+            }
+
+            return null;
+        }
+        private void ShowFavouriteOrders()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Header("Favourite Orders (O=order, U=unfavourite, B=back)");
+
+                var favourites = FavouriteOrder.GetFavourites(customer);
+                if (favourites.Count == 0)
+                {
+                    Console.WriteLine("(No favourite orders saved.)");
+                    Pause("Press ENTER to return…");
+                    return;
+                }
+
+                // Display favourites...
+                for (int i = 0; i < favourites.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}) Favourite Order:");
+                    favourites[i].Print();
+                    Console.WriteLine();
+                }
+
+                Console.Write("Enter number to order, or command (O/U/B): ");
+                var input = Console.ReadLine()?.Trim().ToLower();
+
+                if (input == "b") return;
+
+                if (input == "u")
+                {
+                    HandleUnfavourite(favourites);
+                    break; // Refresh list
+                }
+                else if (input == "o")
+                {
+                    Console.Write("Enter order number: ");
+                    if (!int.TryParse(Console.ReadLine(), out int orderNum) || orderNum < 1 || orderNum > favourites.Count)
+                    {
+                        Pause("Invalid number. Press ENTER to continue...");
+                        continue;
+                    }
+                    FavouriteOrderFacade.PlaceOrderFromFavourite(customer, favourites[orderNum - 1]);
+                    Pause("Press ENTER to return to menu...");
+                    return;
+                }
+                else if (int.TryParse(input, out int directSelection))
+                {
+                    if (directSelection >= 1 && directSelection <= favourites.Count)
+                    {
+                        FavouriteOrderFacade.PlaceOrderFromFavourite(customer, favourites[directSelection - 1]);
+                        Pause("Press ENTER to return to menu...");
+                        return;
+                    }
+                    else
+                    {
+                        Pause($"Please enter a number between 1 and {favourites.Count}. Press ENTER to continue...");
+                    }
+                }
+                else
+                {
+                    Pause("Invalid input. Press ENTER to continue...");
+                }
+            }
+        }
+
+        private void HandleUnfavourite(List<FavouriteOrder> favourites)
+        {
+            Console.Write("Enter order number to unfavourite: ");
+            if (int.TryParse(Console.ReadLine(), out int selection) && selection >= 1 && selection <= favourites.Count)
+            {
+                if (FavouriteOrder.RemoveFavourite(customer, favourites[selection - 1]))
+                    Console.WriteLine("Favourite removed!");
+                else
+                    Console.WriteLine("Failed to remove favourite.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection.");
+            }
+            Pause("Press ENTER to continue...");
         }
 
         // ========= New: browse menu, add to cart by PATH, checkout here =========
@@ -434,13 +601,22 @@ namespace SDP_Assignment_Team7
 
             // Place order
             var snapshot = cart.Clone();
-            var order = new Order(snapshot, customer);
+            var order = new NormalOrder(snapshot, customer);
+            order.TotalPrice = total;
+            order.AppliedOffer = r.Offer.Clone();
 
             try { r?.AddOrder(order); } catch { }
             try { customer?.AddOrder(order); } catch { }
 
             Console.WriteLine("[✓] Order placed!");
- 
+
+            Console.Write("Would you like to save this order as a favourite? (y/n): ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
+            {
+                var command = new SetFavouriteCommand(customer, snapshot);
+                command.execute();
+            }
+
             cart.Clear();
 
             PromptPayment(total);

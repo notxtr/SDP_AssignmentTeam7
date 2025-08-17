@@ -150,6 +150,9 @@ namespace SDP_Assignment_Team7
             Restaurant veggieCorner = new Restaurant("Veggie Corner");
             veggieCorner.Menu = veggieMenu;
 
+            kopiTiam.setOffer(new FixedOffer(10, "School holidays Offer"));
+            westernDiner.setOffer(new PercentageOffer(0.5, "Black Friday Sale"));
+
             // ===== Example: display them =====
             List<Restaurant> sampleRestaurants = new List<Restaurant> { kopiTiam, westernDiner, veggieCorner };
             Graberroo.getInstance().GetRestaurants.AddRange(sampleRestaurants);
@@ -194,8 +197,8 @@ namespace SDP_Assignment_Team7
             previousOrder2.AddItem(new OrderItem((MenuItem)nasiMenu.getChild(0), 1));
             previousOrder2.AddItem(new OrderItem((MenuItem)nasiMenu.getChild(1), 1));
 
-            Order order1 = new Order(previousOrder1, customer);
-            Order order2 = new Order(previousOrder2, customer);
+            Order order1 = new NormalOrder(previousOrder1, customer);
+            Order order2 = new NormalOrder(previousOrder2, customer);
 
             // Store previous orders in customer (if you have a list in Customer)
             // Assuming we add a PreviousOrders property to Customer

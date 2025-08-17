@@ -11,6 +11,7 @@ namespace SDP_Assignment_Team7
         private string address;
         private string delieveryNote;
         private double totalPrice;
+        private Offer appliedOffer;
 
         public Order(Cart cart, Customer customer)
         {
@@ -27,6 +28,17 @@ namespace SDP_Assignment_Team7
         public void Print()
         {
             cart.Print();
+            if (appliedOffer != null)
+            {
+                Console.WriteLine(appliedOffer.getDescription());
+                Console.WriteLine($"Total Paid: ${TotalPrice:0.00}");
+            }
+        }
+
+        public Offer AppliedOffer
+        {
+            get { return appliedOffer; }
+            set { appliedOffer = value; }
         }
 
         public Cart Cart
